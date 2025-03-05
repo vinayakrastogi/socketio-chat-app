@@ -28,7 +28,8 @@ app.get('/', (request, response) => {
 
 // Setups event listener for Server, connection event is emmited whenever a new client connects to the server
 io.on('connection', (socket) => {
-    console.log('A user connected');
+    const username = socket.handshake.query.username;
+    console.log(`User connected :: ${username}`);
 
     socket.on('disconnect', () => {
         console.log('User disconnected');

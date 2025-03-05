@@ -8,26 +8,33 @@
 <body>
     
     <div class="container">
-        <div class="chat-container">
-            <div class="messages">
-                
-                <div class="message">
-                    <p class="meta">Brad<span>9:12pm</span></p>
-                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
-                </div>
-                <div class="message">
-                    <p class="meta">Brad<span>9:12pm</span></p>
-                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
-                </div>
-                <div class="message">
-                    <p class="meta">Brad<span>9:12pm</span></p>
-                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
-                </div>
-                <div class="message">
-                    <p class="meta">Brad<span>9:12pm</span></p>
-                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
-                </div>
 
+        <div class="login-container">
+            <form id="login-form" action="">
+                <input type="text" id="login-username" placeholder="Enter username">
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+
+
+        <div class="chat-container" style="display:none;">
+            <div class="messages">
+                <div class="message">
+                    <p class="meta">Brad<span>9:12pm</span></p>
+                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
+                </div>
+                <div class="message">
+                    <p class="meta">Brad<span>9:12pm</span></p>
+                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
+                </div>
+                <div class="message">
+                    <p class="meta">Brad<span>9:12pm</span></p>
+                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
+                </div>
+                <div class="message">
+                    <p class="meta">Brad<span>9:12pm</span></p>
+                    <p class="text"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.</p>
+                </div>
             </div>
             
             <div class="chat-form-container">
@@ -37,7 +44,10 @@
                 </form>
             </div>
 
+            <button id="logout-button" type="button">logout</button>
+
         </div>
+
     </div>
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script type="module" src="scripts/main.js"></script>
