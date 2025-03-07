@@ -1,23 +1,31 @@
 let socket;
-let username = 'Rahul';
-let message = "O baby doll mai sone di";
-let userid = 'gybuyg787GHYU7hgj';
-let time = 'Tue Feb 25 2025 18:05:18 GMT+0530 (India Standard Time)';
-let msg_type = 'user connected';
+let username;
+let message;
+let time;
+let msg_type; // user connected // user disconnected // chat message
 
-const emitToServer = () => {
-    // Your emit logic here
+// chat message format
+
+const generateMessage = (message, username, time, msg_type) => {
+    return JSON.stringify({
+        message,
+        username,
+        time,
+        msg_type
+    });
 };
 
-document.getElementById('chat-form').addEventListener('submit', (event) => {
+const handleChatSubmit = (event) => {
     event.preventDefault();
-    message = document.getElementById('msg');
+    let message = document.getElementById('msg');
     if (message.value) {
-        console.log(message.value);
-        socket.emit('chat message', message.value);
+        socket.emit('chat message', generateMessage(message.value, username, new Date(), 'user_message'));
         message.value = '';
     }
-});
+};
+
+
+// socker format
 
 const initializeSocket = (username) => {
     socket = io({
@@ -25,9 +33,18 @@ const initializeSocket = (username) => {
             username: username
         }
     }); // Connect to the server
-    socket.emit('user connected', username);
+
+    socket.emit('User connected', username);
+
     socket.on('message from server', (msg) => {
         console.log('Message from server ::' + msg);
+        const messagesElement = document.querySelector('.messages');
+        if (messagesElement) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.innerHTML = `<p class="text">${msg}</p>`;
+            messagesElement.appendChild(messageDiv);
+        }
     });
 };
 
@@ -42,14 +59,15 @@ const logoutUser = () => {
 
 document.getElementById('login-form').addEventListener('submit', (event) => {
     event.preventDefault();
-    username = document.getElementById('login-username');
-    if (username.value) {
-        console.log(username.value);
-        initializeSocket(username.value);
-        username.value = '';
+    const usernameInput = document.getElementById('login-username');
+    if (usernameInput.value) {
+        username = usernameInput.value;
+        initializeSocket(username);
+        usernameInput.value = '';
         document.querySelector('.login-container').style.display = 'none';
         document.querySelector('.chat-container').style.display = 'block';
     }
 });
 
 document.getElementById('logout-button').addEventListener('click', logoutUser);
+document.getElementById('chat-form').addEventListener('submit', handleChatSubmit);
