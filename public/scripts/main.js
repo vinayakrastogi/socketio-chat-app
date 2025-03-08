@@ -4,28 +4,69 @@ let message;
 let time;
 let msg_type; // user connected // user disconnected // chat message
 
-// chat message format
+/*
+ *   Function : display_message
+ *   Purpose : Prints a specific message based on provided parameter n
+ *   Parameters :
+ *           n - choice of pre-defined message
+ *   Returns: void
+*/
 
-const generateMessage = (message, username, time, msg_type) => {
-    return JSON.stringify({
-        message,
-        username,
-        time,
-        msg_type
-    });
+
+const messageObject = {
+    message: '',
+    username: '',
+    time: '',
+    msg_type: '',
+
+    generateMessage: function() {
+        return JSON.stringify({
+            message: this.message,
+            username: this.username,
+            time: this.time,
+            msg_type: this.msg_type
+        });
+    },
+
+    parseMessage: function(jsonString) {
+        const parsed = JSON.parse(jsonString);
+        this.message = parsed.message;
+        this.username = parsed.username;
+        this.time = parsed.time;
+        this.msg_type = parsed.msg_type;
+    }
 };
 
+// Sender Side
 const handleChatSubmit = (event) => {
     event.preventDefault();
     let message = document.getElementById('msg');
     if (message.value) {
-        socket.emit('chat message', generateMessage(message.value, username, new Date(), 'user_message'));
+        const newMessageObject = Object.create(messageObject);
+        newMessageObject.message = message.value;
+        newMessageObject.username = username;
+        newMessageObject.time = new Date();
+        newMessageObject.msg_type = 'user_message';
+        socket.emit('chat message', newMessageObject.generateMessage());
         message.value = '';
     }
 };
 
 
-// socker format
+// Receiver Side
+const handleMessageFromServer = (msg) => {
+    const messagesElement = document.querySelector('.messages');
+    if (messagesElement) {
+
+        const newMessageObject = Object.create(messageObject);
+        newMessageObject.parseMessage(msg);
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        messageDiv.innerHTML = `<p class="text">${newMessageObject.message}</p>`;
+        messagesElement.appendChild(messageDiv);
+    }
+};
 
 const initializeSocket = (username) => {
     socket = io({
@@ -36,16 +77,7 @@ const initializeSocket = (username) => {
 
     socket.emit('User connected', username);
 
-    socket.on('message from server', (msg) => {
-        console.log('Message from server ::' + msg);
-        const messagesElement = document.querySelector('.messages');
-        if (messagesElement) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.innerHTML = `<p class="text">${msg}</p>`;
-            messagesElement.appendChild(messageDiv);
-        }
-    });
+    socket.on('message from server', handleMessageFromServer);
 };
 
 const logoutUser = () => {
@@ -57,7 +89,7 @@ const logoutUser = () => {
     document.querySelector('.login-container').style.display = 'block';
 };
 
-document.getElementById('login-form').addEventListener('submit', (event) => {
+const handleLoginSubmit = (event) => {
     event.preventDefault();
     const usernameInput = document.getElementById('login-username');
     if (usernameInput.value) {
@@ -67,7 +99,11 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
         document.querySelector('.login-container').style.display = 'none';
         document.querySelector('.chat-container').style.display = 'block';
     }
-});
+};
 
+
+
+// Event listeners
+document.getElementById('login-form').addEventListener('submit', handleLoginSubmit);
 document.getElementById('logout-button').addEventListener('click', logoutUser);
 document.getElementById('chat-form').addEventListener('submit', handleChatSubmit);
