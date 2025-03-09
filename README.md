@@ -1,6 +1,6 @@
 # socketio-chat-app
 
-initilise project
+initialise project
  (in project folder install socket.io and express)
    npm install socket.io express
 
